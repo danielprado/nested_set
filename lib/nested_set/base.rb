@@ -530,7 +530,7 @@ module CollectiveIdea #:nodoc:
           end
 
           def to_text
-            self.class.map_with_level(self_and_descendants) do |node,level|
+            self.class.base_class.map_with_level(self_and_descendants) do |node,level|
               "#{'*'*(level+1)} #{node.id} #{node.to_s} (#{node.parent_id}, #{node.left}, #{node.right})"
             end.join("\n")
           end
@@ -538,19 +538,19 @@ module CollectiveIdea #:nodoc:
         protected
 
           def q_left
-            "#{self.class.quoted_table_name}.#{quoted_left_column_name}"
+            "#{self.class.base_class.quoted_table_name}.#{quoted_left_column_name}"
           end
 
           def q_right
-            "#{self.class.quoted_table_name}.#{quoted_right_column_name}"
+            "#{self.class.base_class.quoted_table_name}.#{quoted_right_column_name}"
           end
 
           def q_parent
-            "#{self.class.quoted_table_name}.#{quoted_parent_column_name}"
+            "#{self.class.base_class.quoted_table_name}.#{quoted_parent_column_name}"
           end
 
           def q_primary_key
-            "#{self.class.quoted_table_name}.#{quoted_primary_key_column_name}"
+            "#{self.class.base_class.quoted_table_name}.#{quoted_primary_key_column_name}"
           end
 
           def without_self(scope)
@@ -713,3 +713,4 @@ module CollectiveIdea #:nodoc:
     end # NestedSet
   end # Acts
 end # CollectiveIdea
+
