@@ -72,8 +72,20 @@ module CollectiveIdea #:nodoc:
 
               belongs_to :parent, :class_name => self.base_class.to_s,
                 :foreign_key => parent_column_name
-              has_many :children, :class_name => self.base_class.to_s,
-                :foreign_key => parent_column_name, :order => quoted_left_column_name
+              
+              has_many_children_options = {
+                  :class_name => self.base_class.to_s,
+                  :foreign_key => parent_column_name,
+                  :order => quoted_left_column_name,
+                  :inverse_of => (:parent unless options[:polymorphic]),
+              }
+                
+              # Add callbacks, if they were supplied.. otherwise, we don't want them.
+              [:before_add, :after_add, :before_remove, :after_remove].each do |ar_callback|
+                has_many_children_options.update(ar_callback => options[ar_callback]) if options[ar_callback]
+              end  
+                
+              has_many :children, has_many_children_options
 
               attr_accessor :skip_before_destroy
 
